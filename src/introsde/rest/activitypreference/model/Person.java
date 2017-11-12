@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -20,7 +22,7 @@ import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 @Entity
 @Table(name="\"Person\"")
 @NamedQuery(name="Person.findAll", query="SELECT p FROM Person p")
-@XmlType(propOrder = {"id", "firstname", "lastname", "birthdate"})
+@XmlType(propOrder = {"idPerson", "firstname", "lastname", "birthdate", "activities"})
 @XmlRootElement
 public class Person implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -30,8 +32,8 @@ public class Person implements Serializable {
     //@TableGenerator(name="sqlite_person", table="sqlite_sequence",
     //    pkColumnName="firstname", valueColumnName="seq",
     //    pkColumnValue="Person")
-	@Column(name="\"id\"")
-	private int id;
+	@Column(name="\"idPerson\"")
+	private int idPerson;
 	
 	@Column(name="\"firstname\"")
 	private String firstname;
@@ -43,21 +45,21 @@ public class Person implements Serializable {
 	@Column(name="\"birthdate\"")
 	private Date birthdate;
 
-	//bi-directional many-to-many association to MeasureDefinition
-	//@OneToMany(mappedBy="person",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    //private List<LifeStatus> lifeStatus;
+	//OneToMany relation from Person to Activity
+	@OneToMany(mappedBy="person",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	private List<Activity> activities;
 
 	public Person() {
 	}
 	
 	// Follow getter and setter for every attribute of this class
     
-	public int getId() {
-		return this.id;
+	public int getIdPerson() {
+		return idPerson;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setIdPerson(int idPerson) {
+		this.idPerson = idPerson;
 	}
 	
 	public String getFirstname() {
@@ -90,6 +92,16 @@ public class Person implements Serializable {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
+	}
+	
+	@XmlElementWrapper(name = "activitiesPreference")
+	@XmlElement(name = "activity")
+	public List<Activity> getActivities() {
+		return activities;
+	}
+
+	public void setActivities(List<Activity> activities) {
+		this.activities = activities;
 	}
 	
     public static List<Person> getAll() {

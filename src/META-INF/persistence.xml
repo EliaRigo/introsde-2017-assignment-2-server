@@ -3,6 +3,8 @@
     <persistence-unit name="assignment" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>	
         <class>introsde.rest.activitypreference.model.Person</class>
+        <class>introsde.rest.activitypreference.model.Activity</class>
+        <class>introsde.rest.activitypreference.model.ActivityType</class>
         <properties>
             <property name="hibernate.archive.autodetection" value="class, hbm"/>
             <!-- The jdbc driver we will use to connect to the database -->

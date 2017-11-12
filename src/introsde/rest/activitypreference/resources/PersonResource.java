@@ -1,5 +1,6 @@
 package introsde.rest.activitypreference.resources;
 
+import introsde.rest.activitypreference.model.Activity;
 import introsde.rest.activitypreference.model.Person;
 
 import java.text.ParseException;
@@ -55,6 +56,21 @@ public class PersonResource {
 		System.out.println("Request#1: GET /person");
 		return Person.getAll();
 	}
+	
+	/**
+	 * Request#2: GET /person/{id} 
+	 * Return person's and activities information (via XML or JSON)
+	 * 
+	 * @param id Id integer (from path /person/{id})
+	 * @return Person person (in XML or JSON)
+	 */
+	@GET
+	@Path("{id}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Person getPersonAndActivityByidPerson(@PathParam("id") int id) {
+		System.out.println("Request#2: GET /person/" + String.valueOf(id));
+		return Person.getPersonById(id);
+	}
 
 	/**
 	 * Request#3: PUT /person/{id} 
@@ -72,7 +88,7 @@ public class PersonResource {
 	public Person putPerson(@PathParam("id") int id, Person person) throws ParseException {
 		System.out.println("Request#3: PUT /person/" + String.valueOf(id));
 		Person existing = Person.getPersonById(id);
-		if (existing != null && id == person.getId()) {
+		if (existing != null && id == person.getIdPerson()) {
 			// We allow updating only if the person exits
 			// and request's id and person.getId() match
 			if (person.getFirstname() == null) {
