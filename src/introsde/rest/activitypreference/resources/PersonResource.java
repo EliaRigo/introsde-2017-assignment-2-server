@@ -105,6 +105,20 @@ public class PersonResource {
 		}
 		return person;
 	}
+	
+	/**
+	 * Request#4: POST /person Insert new Person (via XML or JSON)
+	 * 
+	 * @return New Person (in XML or JSON format)
+	 */
+	@POST
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Person postPerson(Person person) {
+		System.out.println("Request#4: POST /person");
+		Person.newPerson(person);
+		return person;
+	}
 
 	/**
 	 * Request#5: DELETE /person/{id} Delete person with specific {id}
@@ -150,7 +164,7 @@ public class PersonResource {
 	 * @param activity_id
 	 *            Id of the Activity (from path
 	 *            /person/{id}/{activity_type}/{activity_id})
-	 * @return List of activity (in XML or JSON format)
+	 * @return Single activity (in XML or JSON format)
 	 */
 	@GET
 	@Path("{id}/{activity_type}/{activity_id}")

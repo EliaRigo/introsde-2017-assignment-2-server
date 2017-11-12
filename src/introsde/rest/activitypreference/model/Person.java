@@ -117,6 +117,22 @@ public class Person implements Serializable {
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return p;
 	}
+	
+	public static Person newPerson(Person p) {
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		em.persist(p);
+		tx.commit();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		System.out.println("ID: " + p.getIdPerson());
+		for (Activity a : p.getActivities()) {
+			a.setPerson(p);
+			a.setIdPerson(p.getIdPerson());
+			Activity.updateActivity(a);
+		}
+		return p;
+	}
 
 	public static Person updatePerson(Person p) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();

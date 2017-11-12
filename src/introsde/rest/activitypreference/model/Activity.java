@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -175,5 +176,14 @@ public class Activity implements Serializable {
 				.setParameter("param_activity_type", activity_type).getSingleResult();
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return activity;
+	}
+	
+	public static void updateActivity(Activity activity) {
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		em.merge(activity);
+		tx.commit();
+		ActivityPreferenceDao.instance.closeConnections(em);
 	}
 }
