@@ -45,8 +45,7 @@ public class PersonResource {
 	private EntityManagerFactory entityManagerFactory;
 
 	/**
-	 * Request#1: GET /person 
-	 * Return the list of people in JSON and XML
+	 * Request#1: GET /person Return the list of people in JSON and XML
 	 * 
 	 * @return List<Person> List of Person (in XML or JSON format)
 	 */
@@ -56,12 +55,13 @@ public class PersonResource {
 		System.out.println("Request#1: GET /person");
 		return Person.getAll();
 	}
-	
+
 	/**
-	 * Request#2: GET /person/{id} 
-	 * Return person's and activities information (via XML or JSON)
+	 * Request#2: GET /person/{id} Return person's and activities information (via
+	 * XML or JSON)
 	 * 
-	 * @param id Id integer (from path /person/{id})
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
 	 * @return Person person (in XML or JSON format)
 	 */
 	@GET
@@ -73,11 +73,12 @@ public class PersonResource {
 	}
 
 	/**
-	 * Request#3: PUT /person/{id} 
-	 * Updates person's information (via XML or JSON)
+	 * Request#3: PUT /person/{id} Updates person's information (via XML or JSON)
 	 * 
-	 * @param id Id integer (from path /person/{id})
-	 * @param person Person (from requests' body)
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
+	 * @param person
+	 *            Person (from requests' body)
 	 * @return Person Updated person (in XML or JSON format)
 	 * @throws ParseException
 	 */
@@ -106,10 +107,10 @@ public class PersonResource {
 	}
 
 	/**
-	 * Request#5: DELETE /person/{id} 
-	 * Delete person with specific {id}
+	 * Request#5: DELETE /person/{id} Delete person with specific {id}
 	 * 
-	 * @param id Id integer (from path /person/{id})
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
 	 */
 	@DELETE
 	@Path("{id}")
@@ -118,21 +119,45 @@ public class PersonResource {
 		Person p = Person.getPersonById(id);
 		Person.removePerson(p);
 	}
-	
+
 	/**
-	 * Request#7: GET /person/{id}/{activity_type}
-	 * Return person's activities information (via XML or JSON)
+	 * Request#7: GET /person/{id}/{activity_type} Return person's activities
+	 * information (via XML or JSON)
 	 * 
-	 * @param id Id integer (from path /person/{id})
-	 * @param activity_type Name of the activity (from path /person/{id}/{activity_type})
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
+	 * @param activity_type
+	 *            Name of the activity (from path /person/{id}/{activity_type})
 	 * @return List of activity (in XML or JSON format)
 	 */
 	@GET
 	@Path("{id}/{activity_type}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public List<Activity> getActivityByIdPersonAndActivityType(@PathParam("id") int id, 
-													   @PathParam("activity_type") String activity_type) {
+	public List<Activity> getActivityByIdPersonAndActivityType(@PathParam("id") int id,
+			@PathParam("activity_type") String activity_type) {
 		System.out.println("Request#7: GET /person/" + String.valueOf(id) + "/" + activity_type);
 		return Activity.getActivityByIdPersonAndActivityType(id, activity_type);
+	}
+
+	/**
+	 * Request#8: GET /person/{id}/{activity_type}/{activity_id} Return person's
+	 * activities information (via XML or JSON)
+	 * 
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
+	 * @param activity_type
+	 *            Name of the activity (from path /person/{id}/{activity_type})
+	 * @param activity_id
+	 *            Id of the Activity (from path
+	 *            /person/{id}/{activity_type}/{activity_id})
+	 * @return List of activity (in XML or JSON format)
+	 */
+	@GET
+	@Path("{id}/{activity_type}/{activity_id}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Activity getActivityByIdPersonAndIdActivityActivityType(@PathParam("id") int id,
+			@PathParam("activity_type") String activity_type, @PathParam("activity_id") int activity_id) {
+		System.out.println("Request#8: GET /person/" + String.valueOf(id) + "/" + activity_type + "/" + activity_id);
+		return Activity.getActivityByIdPersonAndIdActivityActivityType(id, activity_id, activity_type);
 	}
 }

@@ -20,7 +20,6 @@ import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 @Entity
 @Table(name = "\"ActivityType\"")
 @NamedQuery(name = "ActivityType.findAll", query = "SELECT a FROM ActivityType a")
-//@XmlType(propOrder = { "id", "firstname", "lastname", "birthdate" })
 @XmlRootElement
 public class ActivityType implements Serializable {
 	private static final long serialVersionUID = 1L;

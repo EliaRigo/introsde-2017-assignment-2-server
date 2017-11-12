@@ -26,8 +26,11 @@ import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 @NamedQueries({ @NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a"),
 		@NamedQuery(name = "Activity.findActivitiesByIdPersonAndActivityType", query = "SELECT a FROM Activity a "
 				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
-				+ "WHERE a.idPerson = :param_idPerson AND " 
-				+ "at.activity_type = :param_activity_type") })
+				+ "WHERE a.idPerson = :param_idPerson AND " + "at.activity_type = :param_activity_type"),
+		@NamedQuery(name = "Activity.findActivityByIdPersonAndIdActivityActivityType", query = "SELECT a FROM Activity a "
+				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
+				+ "WHERE a.idPerson = :param_idPerson AND " + "a.idActivity = :param_idActivity AND "
+				+ "at.activity_type = :param_activity_type"), })
 // @XmlType(propOrder = {"id", "firstname", "lastname", "birthdate"})
 @XmlRootElement
 public class Activity implements Serializable {
@@ -73,11 +76,11 @@ public class Activity implements Serializable {
 
 	// Follow getter and setter for every attribute of this class
 
-	public int getId() {
+	public int getIdActivity() {
 		return idActivity;
 	}
 
-	public void setId(int idActivity) {
+	public void setIdActivity(int idActivity) {
 		this.idActivity = idActivity;
 	}
 
@@ -157,10 +160,20 @@ public class Activity implements Serializable {
 	public static List<Activity> getActivityByIdPersonAndActivityType(int idPerson, String activity_type) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		List<Activity> list = em.createNamedQuery("Activity.findActivitiesByIdPersonAndActivityType", Activity.class)
-				.setParameter("param_idPerson", idPerson)
-				.setParameter("param_activity_type", activity_type)
+				.setParameter("param_idPerson", idPerson).setParameter("param_activity_type", activity_type)
 				.getResultList();
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return list;
+	}
+
+	public static Activity getActivityByIdPersonAndIdActivityActivityType(int idPerson, int idActivity,
+			String activity_type) {
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		Activity activity = em
+				.createNamedQuery("Activity.findActivityByIdPersonAndIdActivityActivityType", Activity.class)
+				.setParameter("param_idPerson", idPerson).setParameter("param_idActivity", idActivity)
+				.setParameter("param_activity_type", activity_type).getSingleResult();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return activity;
 	}
 }
