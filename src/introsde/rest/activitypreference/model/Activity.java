@@ -10,24 +10,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 
 @Entity
 @Table(name = "\"Activity\"")
-@NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a")
+@NamedQueries({ @NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a"),
+		@NamedQuery(name = "Activity.findActivitiesByIdPersonAndActivityType", query = "SELECT a FROM Activity a "
+				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
+				+ "WHERE a.idPerson = :param_idPerson AND " 
+				+ "at.activity_type = :param_activity_type") })
 // @XmlType(propOrder = {"id", "firstname", "lastname", "birthdate"})
 @XmlRootElement
 public class Activity implements Serializable {
@@ -40,39 +40,39 @@ public class Activity implements Serializable {
 	// pkColumnValue="Activity")
 	@Column(name = "\"idActivity\"")
 	private int idActivity;
-	
-	@Column(name="\"idPerson\"")
+
+	@Column(name = "\"idPerson\"")
 	private int idPerson;
-	
-	@Column(name="\"idActivityType\"")
+
+	@Column(name = "\"idActivityType\"")
 	private int idActivityType;
-	
+
 	@Column(name = "\"name\"")
 	private String name;
-	
+
 	@Column(name = "\"description\"")
 	private String description;
-	
+
 	@Column(name = "\"place\"")
 	private String place;
 
 	@Column(name = "\"startdate\"")
 	private String startdate;
-	
-	//OneToMany relation from Person to Activity
-	@OneToOne(mappedBy="activity",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+
+	// OneToMany relation from Person to Activity
+	@OneToOne(mappedBy = "activity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private ActivityType activityType;
 
 	@ManyToOne
-	@PrimaryKeyJoinColumn(name="\"idPerson\"",referencedColumnName="\"idPerson\"")
-    private Person person;
+	@PrimaryKeyJoinColumn(name = "\"idPerson\"", referencedColumnName = "\"idPerson\"")
+	private Person person;
 
 	public Activity() {
-		
+
 	}
-	
+
 	// Follow getter and setter for every attribute of this class
-	
+
 	public int getId() {
 		return idActivity;
 	}
@@ -128,8 +128,8 @@ public class Activity implements Serializable {
 	public void setStartdate(String startdate) {
 		this.startdate = startdate;
 	}
-	
-	//@XmlElement(name = "activityType")
+
+	// @XmlElement(name = "activityType")
 	public ActivityType getActivityType() {
 		return activityType;
 	}
@@ -137,7 +137,7 @@ public class Activity implements Serializable {
 	public void setActivityType(ActivityType activityType) {
 		this.activityType = activityType;
 	}
-	
+
 	@XmlTransient
 	public Person getPerson() {
 		return person;
@@ -146,11 +146,21 @@ public class Activity implements Serializable {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	
+
 	public static List<Activity> getAll() {
-        EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
-        List<Activity> list = em.createNamedQuery("Activity.findAll", Activity.class).getResultList();
-        ActivityPreferenceDao.instance.closeConnections(em);
-        return list;
-    }
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		List<Activity> list = em.createNamedQuery("Activity.findAll", Activity.class).getResultList();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return list;
+	}
+
+	public static List<Activity> getActivityByIdPersonAndActivityType(int idPerson, String activity_type) {
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		List<Activity> list = em.createNamedQuery("Activity.findActivitiesByIdPersonAndActivityType", Activity.class)
+				.setParameter("param_idPerson", idPerson)
+				.setParameter("param_activity_type", activity_type)
+				.getResultList();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return list;
+	}
 }
