@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Stateless // will work only inside a Java EE application
@@ -67,9 +68,13 @@ public class PersonResource {
 	@GET
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Person getPersonAndActivityByidPerson(@PathParam("id") int id) {
+	public Response getPersonAndActivityByidPerson(@PathParam("id") int id) {
 		System.out.println("Request#2: GET /person/" + String.valueOf(id));
-		return Person.getPersonById(id);
+		Person person = Person.getPersonById(id);
+		if (person == null) {
+        	return Response.status(404).build();
+		}
+        return Response.ok().entity(person).build();
 	}
 
 	/**
@@ -105,7 +110,7 @@ public class PersonResource {
 		}
 		return person;
 	}
-	
+
 	/**
 	 * Request#4: POST /person Insert new Person (via XML or JSON)
 	 * 
@@ -131,6 +136,9 @@ public class PersonResource {
 	public void deletePerson(@PathParam("id") int id) {
 		System.out.println("Request#5: DELETE /person/" + String.valueOf(id));
 		Person p = Person.getPersonById(id);
+		if (p == null) {
+			throw new RuntimeException("Delete: Person with " + id + " not found");
+		}
 		Person.removePerson(p);
 	}
 
