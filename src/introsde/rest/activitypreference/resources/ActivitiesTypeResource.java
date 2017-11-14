@@ -45,9 +45,28 @@ public class ActivitiesTypeResource {
 		 * @return List<ActivitiesTypes> List of ActivitiesTypes
 		 */
 		@GET
-		@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-		public List<ActivityType> getAll() {
+		@Produces({MediaType.APPLICATION_XML})
+		public String getAll() {
 			System.out.println("Request#6 GET /activity_types ");
-			return ActivityType.getAll();
+	        String result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+	        		+ "<activityTypes>";
+	        for (ActivityType at : ActivityType.getAll()){
+	        	result += "<activity_type>" + at.getActivity_type() + "</activity_type>" ;
+	        }
+	        result += "</activityTypes>";
+	        return result;
 		}
+		
+	    @GET
+	    @Produces({MediaType.APPLICATION_JSON })
+	    public String getPersonsJSON() {
+	        System.out.println("Getting list of measure definition in JSON...");
+	        List<ActivityType> at = ActivityType.getAll();
+	        String result = "{\"activityTypes\": [";
+	        for (int i = 0; i < at.size()-1; i++){
+	        	result += "\"" + at.get(i).getActivity_type() + "\"," ;
+	        }
+	        result += "\"" +  at.get(at.size()-1).getActivity_type()+ "\"]}" ;
+	        return result;
+	    }
 }
