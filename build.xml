@@ -142,7 +142,7 @@
 
 	<!-- make sure you have created first the WebContent folder, including a META-INF folder, WEB-INF/web.xml file and WEB-INF/lib folder --> 
 	<target name="create.war" depends="compile">
-		<war destfile="assignment2.war" webxml="${web.dir}/WebContent/WEB-INF/web.xml">
+		<war destfile="introsde-2017-assignment-2-server.war" webxml="${web.dir}/WebContent/WEB-INF/web.xml">
 			<fileset dir="${web.dir}/WebContent">
 				<include name="**/*.*"/>
 			</fileset>
@@ -152,23 +152,8 @@
 	
 	<property name="apache.dir" value="/opt/Tomcat/"></property>
 	<target name="apache.deploy.war" depends="create.war">
-		<copy file="${web.dir}/assignment2.war"
+		<copy file="${web.dir}/introsde-2017-assignment-2-server.war"
 		      toDir="${apache.dir}/webapps"
 			  overwrite="yes"></copy>
 	</target>
-	
-	
-	<target name="execute.client" depends="compile">
-		<echo message="Now I execute the test client" />
-		<java classname="introsde.rest.ehealth.client.TestClient" classpath="${build.dir}">
-			<classpath>
-				<fileset dir="${lib.dir}">
-			    	<include name="**/*.jar" />
-			    	<include name="*.jar" />
-			    </fileset>
-			</classpath>
-		</java>
-	</target>
-	
-	
 </project>
