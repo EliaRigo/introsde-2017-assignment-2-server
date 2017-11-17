@@ -63,11 +63,11 @@ public class Activity implements Serializable {
 	@Column(name = "\"startdate\"")
 	private String startdate;
 
-	// OneToMany relation from Person to Activity
-	@OneToOne(mappedBy = "activity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne()
+	@PrimaryKeyJoinColumn(name = "\"idActivityType\"", referencedColumnName = "\"idActivityType\"")
 	private ActivityType activityType;
 
-	@ManyToOne
+	@ManyToOne()
 	@PrimaryKeyJoinColumn(name = "\"idPerson\"", referencedColumnName = "\"idPerson\"")
 	private Person person;
 
@@ -174,6 +174,21 @@ public class Activity implements Serializable {
 				.createNamedQuery("Activity.findActivityByIdPersonAndIdActivityActivityType", Activity.class)
 				.setParameter("param_idPerson", idPerson).setParameter("param_idActivity", idActivity)
 				.setParameter("param_activity_type", activity_type).getSingleResult();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return activity;
+	}
+	
+	public static Activity postActivity(Activity activity, int idPerson, ActivityType activityType) {
+		activity.setIdPerson(idPerson);
+		activity.setPerson(Person.getPersonById(idPerson));
+		activity.setIdActivityType(activityType.getIdActivityType());
+		activity.setActivityType(activityType);
+		
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		em.persist(activity);
+		tx.commit();
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return activity;
 	}

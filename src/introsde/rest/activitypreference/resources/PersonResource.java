@@ -1,6 +1,7 @@
 package introsde.rest.activitypreference.resources;
 
 import introsde.rest.activitypreference.model.Activity;
+import introsde.rest.activitypreference.model.ActivityType;
 import introsde.rest.activitypreference.model.Person;
 
 import java.text.ParseException;
@@ -72,9 +73,9 @@ public class PersonResource {
 		System.out.println("Request#2: GET /person/" + String.valueOf(id));
 		Person person = Person.getPersonById(id);
 		if (person == null) {
-        	return Response.status(404).build();
+			return Response.status(404).build();
 		}
-        return Response.ok().entity(person).build();
+		return Response.ok().entity(person).build();
 	}
 
 	/**
@@ -182,4 +183,16 @@ public class PersonResource {
 		System.out.println("Request#8: GET /person/" + String.valueOf(id) + "/" + activity_type + "/" + activity_id);
 		return Activity.getActivityByIdPersonAndIdActivityActivityType(id, activity_id, activity_type);
 	}
+
+	@POST
+	@Path("{id}/{activity_type}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Activity postActivity(@PathParam("id") int id, @PathParam("activity_type") String activity_type,
+			Activity activity) {
+		System.out.println("Request#9: POST /person/" + String.valueOf(id) + "/" + activity_type + "/");
+		ActivityType a = ActivityType.getActivityTypeByActivityType(activity_type);
+		System.out.println("Tutto ok");
+		return Activity.postActivity(activity, id, a);
+	}
+
 }
