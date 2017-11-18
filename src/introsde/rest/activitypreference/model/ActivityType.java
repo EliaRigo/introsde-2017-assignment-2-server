@@ -10,11 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -69,6 +67,12 @@ public class ActivityType implements Serializable {
 		this.activity = activity;
 	}
 
+	/* Follow class methods*/
+	
+	/**
+	 * Get all ActivityType
+	 * @return List of ActivityType
+	 */
 	public static List<ActivityType> getAll() {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		List<ActivityType> list = em.createNamedQuery("ActivityType.findAll", ActivityType.class).getResultList();
@@ -76,6 +80,11 @@ public class ActivityType implements Serializable {
 		return list;
 	}
 
+	/**
+	 * Get ActivityType by ActivityType name
+	 * @param activityType activity_type
+	 * @return Single ActivityType
+	 */
 	public static ActivityType getActivityTypeByActivityType(String activityType) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		ActivityType at = em.createNamedQuery("ActivityType.findActivityTypeByActivityTypeName", ActivityType.class)

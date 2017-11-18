@@ -40,9 +40,8 @@ public class ActivitiesTypeResource {
 
 		/**
 		 * Request#6: GET /activity_types 
-		 * Return the list of activity_types in JSON and XML
-		 * 
-		 * @return List<ActivitiesTypes> List of ActivitiesTypes
+		 * Return the list of activity_types in XML
+		 * @return XML String of ActivitiesTypes
 		 */
 		@GET
 		@Produces({MediaType.APPLICATION_XML})
@@ -57,6 +56,11 @@ public class ActivitiesTypeResource {
 	        return result;
 		}
 		
+		/**
+		 * Request#6: GET /activity_types 
+		 * Return the list of activity_types in JSON
+		 * @return JSON String of ActivitiesTypes
+		 */
 	    @GET
 	    @Produces({MediaType.APPLICATION_JSON })
 	    public String getPersonsJSON() {

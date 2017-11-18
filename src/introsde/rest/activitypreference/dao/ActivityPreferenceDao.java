@@ -9,6 +9,9 @@ public enum ActivityPreferenceDao {
     instance;
     private EntityManagerFactory emf;
 
+    /**
+     * Constructor ActivityPreferenceDao
+     */
     private ActivityPreferenceDao() {
         if (emf!=null) {
             emf.close();
@@ -16,6 +19,10 @@ public enum ActivityPreferenceDao {
         emf = Persistence.createEntityManagerFactory("assignment");
     }
 
+    /**
+     * Create Entity Manager
+     * @return EntityManager
+     */
     public EntityManager createEntityManager() {
         try {
             return emf.createEntityManager();
@@ -25,14 +32,27 @@ public enum ActivityPreferenceDao {
         return null;    
     }
 
+    /**
+     * Close database connection
+     * @param em Entity Manager
+     */
     public void closeConnections(EntityManager em) {
         em.close();
     }
 
+    /**
+     * Get Transaction from Entity Manager
+     * @param em Entity Manager
+     * @return EntityTransaction
+     */
     public EntityTransaction getTransaction(EntityManager em) {
         return em.getTransaction();
     }
 
+    /**
+     * Get Entity Manager Factor
+     * @return EntityManagerFactory
+     */
     public EntityManagerFactory getEntityManagerFactory() {
         return emf;
     }  

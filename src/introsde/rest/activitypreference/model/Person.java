@@ -104,6 +104,12 @@ public class Person implements Serializable {
 		this.activities = activities;
 	}
 
+	/* Follow class methods */
+	
+	/**
+	 * Get all person
+	 * @return List of Person
+	 */
 	public static List<Person> getAll() {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		List<Person> list = em.createNamedQuery("Person.findAll", Person.class).getResultList();
@@ -111,6 +117,11 @@ public class Person implements Serializable {
 		return list;
 	}
 
+	/**
+	 * Get single Person by IdPerson
+	 * @param id Integer IdPerson
+	 * @return Single Person
+	 */
 	public static Person getPersonById(int id) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		Person p = em.find(Person.class, id);
@@ -118,6 +129,11 @@ public class Person implements Serializable {
 		return p;
 	}
 	
+	/**
+	 * Insert new Person
+	 * @param p New Person
+	 * @return Single Person just inserted
+	 */
 	public static Person newPerson(Person p) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
@@ -134,6 +150,11 @@ public class Person implements Serializable {
 		return p;
 	}
 
+	/**
+	 * Update Person
+	 * @param p Updated Person
+	 * @return Single updated Person
+	 */
 	public static Person updatePerson(Person p) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
@@ -144,6 +165,10 @@ public class Person implements Serializable {
 		return p;
 	}
 
+	/**
+	 * Remove Person
+	 * @param p Person to be deleted
+	 */
 	public static void removePerson(Person p) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
