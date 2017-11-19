@@ -20,6 +20,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -45,6 +46,16 @@ public class PersonResource {
 	// Will work only inside a Java EE application
 	@PersistenceContext(unitName = "assignment", type = PersistenceContextType.TRANSACTION)
 	private EntityManagerFactory entityManagerFactory;
+
+	/*
+	 * @GET
+	 * 
+	 * @Path("/reset") public String reset() throws IOException {
+	 * System.out.println("Request#0: GET /person/reset"); File f = new
+	 * File("database.sqlite"); if(f.exists() && !f.isDirectory()) { f.delete(); }
+	 * App.copyFileUsingStream(new File("database_origin.sqlite"), new
+	 * File("database.sqlite")); return "The database has been reset"; }
+	 */
 
 	/**
 	 * Request#1: GET /person Return the list of people in JSON and XML
@@ -152,19 +163,33 @@ public class PersonResource {
 	 * Request#7: GET /person/{id}/{activity_type} Return person's activities
 	 * information (via XML or JSON)
 	 * 
+	 * Request#11: GET
+	 * /person/{id}/{activity_type}?before={beforeDate}&after={afterDate}
+	 * 
 	 * @param id
 	 *            Id of the Person (from path /person/{id})
 	 * @param activity_type
 	 *            Name of the activity (from path /person/{id}/{activity_type})
+	 * @param beforeDate
+	 *            Start range date
+	 * @param afterDate
+	 *            End range date
 	 * @return List of activity (in XML or JSON format)
 	 */
 	@GET
 	@Path("{id}/{activity_type}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Activity> getActivityByIdPersonAndActivityType(@PathParam("id") int id,
-			@PathParam("activity_type") String activity_type) {
-		System.out.println("Request#7: GET /person/" + String.valueOf(id) + "/" + activity_type);
-		return Activity.getActivityByIdPersonAndActivityType(id, activity_type);
+			@PathParam("activity_type") String activity_type, @QueryParam("before") String beforeDate,
+			@QueryParam("after") String afterDate) {
+		if (beforeDate != null && afterDate != null) {
+			System.out.println("Request #11: GET /person/" + String.valueOf(id) + "/" + activity_type + "?before="
+					+ beforeDate + "&after=" + afterDate);
+			return Activity.getActvityByIdPersonActivityTypeAndRangeDate(id, activity_type, beforeDate, afterDate);
+		} else {
+			System.out.println("Request#7: GET /person/" + String.valueOf(id) + "/" + activity_type);
+			return Activity.getActivityByIdPersonAndActivityType(id, activity_type);
+		}
 	}
 
 	/**
@@ -198,19 +223,51 @@ public class PersonResource {
 	 * @param activity_type
 	 *            Name of the activity (from path /person/{id}/{activity_type})
 	 * @param activity
-	 *            POST body of the request
-	 * @return
+	 *            Body of the request
+	 * @return New Activity
 	 */
 	@POST
 	@Path("{id}/{activity_type}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Activity postActivity(@PathParam("id") int id, @PathParam("activity_type") String activity_type,
 			Activity activity) {
-		System.out.println("Request#9: POST /person/" + String.valueOf(id) + "/" + activity_type + "/");
+		System.out.println("Request#9: POST /person/" + String.valueOf(id) + "/" + activity_type);
 		// Get activityType
 		ActivityType a = ActivityType.getActivityTypeByActivityType(activity_type);
 		// Insert new activity
 		return Activity.postActivity(activity, id, a);
 	}
 
+	/**
+	 * Request #10: GET /person/{id}/{activity_type}/{activity_id}
+	 * 
+	 * @param id
+	 *            Id of the Person (from path /person/{id})
+	 * @param activity_type
+	 *            Name of the activity (from path /person/{id}/{activity_type})
+	 * @param activityId
+	 *            Id of the Activity (from path
+	 *            /person/{id}/{activity_type}/{activity_id})
+	 * @param activity
+	 *            Body of the request
+	 * @return Modified Activity
+	 */
+	@PUT
+	@Path("{id}/{activity_type}/{activity_id}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Activity putActivity(@PathParam("id") int id, @PathParam("activity_type") String activity_type,
+			@PathParam("activity_id") int activityId, Activity activity) {
+		System.out.println("Request #10: PUT /person/" + String.valueOf(id) + "/" + activity_type + "/"
+				+ String.valueOf(activityId));
+		// Update activity
+		activity.setIdActivity(activityId);
+		activity.setIdPerson(id);
+		activity.setPerson(Person.getPersonById(id));
+		activity.setIdActivityType(ActivityType.getActivityTypeByActivityType(activity_type).getIdActivityType());
+		activity.setActivityType(ActivityType.getActivityTypeByActivityType(activity_type));
+		Activity.updateActivity(activity);
+		return activity;
+	}
 }

@@ -21,7 +21,7 @@ import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 
 @Entity
 @Table(name = "\"Activity\"")
-//NameQueries used in this class 
+// NameQueries used in this class
 @NamedQueries({ @NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a"),
 		@NamedQuery(name = "Activity.findActivitiesByIdPersonAndActivityType", query = "SELECT a FROM Activity a "
 				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
@@ -29,7 +29,11 @@ import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 		@NamedQuery(name = "Activity.findActivityByIdPersonAndIdActivityActivityType", query = "SELECT a FROM Activity a "
 				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
 				+ "WHERE a.idPerson = :param_idPerson AND " + "a.idActivity = :param_idActivity AND "
-				+ "at.activity_type = :param_activity_type"), })
+				+ "at.activity_type = :param_activity_type"),
+		@NamedQuery(name = "Activity.findActivityByIdPersonActivityTypeAndRangeDate", query = "SELECT a FROM Activity a "
+				+ "JOIN ActivityType at ON a.idActivityType = at.idActivityType "
+				+ "WHERE a.idPerson = :param_idPerson AND " + "at.activity_type = :param_activity_type AND "
+				+ "a.startdate >= :param_before AND " + "a.startdate <= :param_after") })
 @XmlRootElement
 public class Activity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -149,9 +153,10 @@ public class Activity implements Serializable {
 	}
 
 	/* Follow class methods */
-	
+
 	/**
 	 * Get all Activity
+	 * 
 	 * @return List of Activity
 	 */
 	public static List<Activity> getAll() {
@@ -163,8 +168,11 @@ public class Activity implements Serializable {
 
 	/**
 	 * Get Activity by IdPerson and ActivityType name
-	 * @param idPerson Integer IdPerson
-	 * @param activity_type String activity_type
+	 * 
+	 * @param idPerson
+	 *            Integer IdPerson
+	 * @param activity_type
+	 *            String activity_type
 	 * @return List of Activity
 	 */
 	public static List<Activity> getActivityByIdPersonAndActivityType(int idPerson, String activity_type) {
@@ -178,9 +186,13 @@ public class Activity implements Serializable {
 
 	/**
 	 * Get Activity by IdPerson, IdActivity and ActivityType name
-	 * @param idPerson Integer IdPerson
-	 * @param idActivity Integer IdActivity
-	 * @param activity_type String activity_type
+	 * 
+	 * @param idPerson
+	 *            Integer IdPerson
+	 * @param idActivity
+	 *            Integer IdActivity
+	 * @param activity_type
+	 *            String activity_type
 	 * @return Single Activity
 	 */
 	public static Activity getActivityByIdPersonIdActivityAndActivityType(int idPerson, int idActivity,
@@ -193,12 +205,30 @@ public class Activity implements Serializable {
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return activity;
 	}
-	
+
+	public static List<Activity> getActvityByIdPersonActivityTypeAndRangeDate(int idPerson, String activity_type,
+			String beforeDate, String afterDate) {
+		System.out.println(beforeDate);
+		System.out.println(afterDate);
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+
+		List<Activity> activities = em
+				.createNamedQuery("Activity.findActivityByIdPersonActivityTypeAndRangeDate", Activity.class)
+				.setParameter("param_idPerson", idPerson).setParameter("param_activity_type", activity_type)
+				.setParameter("param_before", beforeDate).setParameter("param_after", afterDate).getResultList();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return activities;
+	}
+
 	/**
 	 * Post new Activity
-	 * @param activity Activity new Activity
-	 * @param idPerson Integer IdPerson
-	 * @param activityType ActivityType activityType
+	 * 
+	 * @param activity
+	 *            Activity new Activity
+	 * @param idPerson
+	 *            Integer IdPerson
+	 * @param activityType
+	 *            ActivityType activityType
 	 * @return Single Activity
 	 */
 	public static Activity postActivity(Activity activity, int idPerson, ActivityType activityType) {
@@ -206,7 +236,7 @@ public class Activity implements Serializable {
 		activity.setPerson(Person.getPersonById(idPerson));
 		activity.setIdActivityType(activityType.getIdActivityType());
 		activity.setActivityType(activityType);
-		
+
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
@@ -215,10 +245,12 @@ public class Activity implements Serializable {
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return activity;
 	}
-	
+
 	/**
 	 * Update Activity
-	 * @param activity Activity updated Activity
+	 * 
+	 * @param activity
+	 *            Activity updated Activity
 	 */
 	public static void updateActivity(Activity activity) {
 		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
