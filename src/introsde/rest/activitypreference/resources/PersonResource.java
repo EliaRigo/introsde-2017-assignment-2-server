@@ -1,9 +1,11 @@
 package introsde.rest.activitypreference.resources;
 
+import introsde.rest.activitypreference.App;
 import introsde.rest.activitypreference.model.Activity;
 import introsde.rest.activitypreference.model.ActivityType;
 import introsde.rest.activitypreference.model.Person;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import javax.ejb.*;
@@ -47,15 +49,12 @@ public class PersonResource {
 	@PersistenceContext(unitName = "assignment", type = PersistenceContextType.TRANSACTION)
 	private EntityManagerFactory entityManagerFactory;
 
-	/*
-	 * @GET
-	 * 
-	 * @Path("/reset") public String reset() throws IOException {
-	 * System.out.println("Request#0: GET /person/reset"); File f = new
-	 * File("database.sqlite"); if(f.exists() && !f.isDirectory()) { f.delete(); }
-	 * App.copyFileUsingStream(new File("database_origin.sqlite"), new
-	 * File("database.sqlite")); return "The database has been reset"; }
-	 */
+	@GET
+	@Path("/init")
+	public String init() throws ParseException, IOException {
+		App.init();
+		return "OK";
+	}
 
 	/**
 	 * Request#1: GET /person Return the list of people in JSON and XML

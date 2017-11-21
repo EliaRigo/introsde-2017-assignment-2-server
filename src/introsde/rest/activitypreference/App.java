@@ -24,7 +24,6 @@ public class App
 {    
     public static void main(String[] args) throws IllegalArgumentException, IOException, URISyntaxException, ParseException
     {
-    	init();
     	String protocol = "http://";
         String hostname = InetAddress.getLocalHost().getHostAddress();
         System.out.println(hostname);

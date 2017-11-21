@@ -41,9 +41,9 @@ public class Person implements Serializable {
 	@Column(name = "\"lastname\"")
 	private String lastname;
 
-	@Temporal(TemporalType.DATE)
+	//@Temporal(TemporalType.DATE)
 	@Column(name = "\"birthdate\"")
-	private Date birthdate;
+	private String birthdate;
 
 	// OneToMany relation from Person to Activity
 	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -71,19 +71,19 @@ public class Person implements Serializable {
 	}
 
 	public String getBirthdate() {
-		if (this.birthdate == null) {
-			return null;
-		}
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		return df.format(this.birthdate);
-		// return this.birthdate;
+		//if (this.birthdate == null) {
+		//	return null;
+		//}
+		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		//return df.format(this.birthdate);
+		return this.birthdate;
 	}
 
-	public void setBirthdate(String birthdate) throws ParseException {
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		Date date = format.parse(birthdate);
-		this.birthdate = date;
-		// this.birthdate = bd;
+	public void setBirthdate(String birthdate) {
+		//DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+		//Date date = format.parse(birthdate);
+		//this.birthdate = date;
+		this.birthdate = birthdate;
 	}
 
 	public String getLastname() {
