@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -92,5 +93,20 @@ public class ActivityType implements Serializable {
 		ActivityPreferenceDao.instance.closeConnections(em);
 		return at;
 
+	}
+	
+	/**
+	 * Post ActivityType
+	 * @param at ActivityType
+	 * @return Insert ActivityType
+	 */
+	public static ActivityType postActivityType(ActivityType at) {
+		EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		em.persist(at);
+		tx.commit();
+		ActivityPreferenceDao.instance.closeConnections(em);
+		return at;
 	}
 }

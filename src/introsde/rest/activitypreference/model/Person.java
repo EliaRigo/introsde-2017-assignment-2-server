@@ -141,7 +141,6 @@ public class Person implements Serializable {
 		em.persist(p);
 		tx.commit();
 		ActivityPreferenceDao.instance.closeConnections(em);
-		System.out.println("ID: " + p.getIdPerson());
 		for (Activity a : p.getActivities()) {
 			a.setPerson(p);
 			a.setIdPerson(p.getIdPerson());
