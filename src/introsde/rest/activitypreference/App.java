@@ -13,9 +13,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import introsde.rest.activitypreference.dao.ActivityPreferenceDao;
 import introsde.rest.activitypreference.model.Activity;
 import introsde.rest.activitypreference.model.ActivityType;
 import introsde.rest.activitypreference.model.Person;
@@ -49,6 +53,18 @@ public class App
     }
     
     public static void init() throws ParseException, IOException {
+    	try {
+	    	EntityManager em = ActivityPreferenceDao.instance.createEntityManager();
+	    	EntityTransaction tx = em.getTransaction();
+			tx.begin();
+	    	em.createQuery("DELETE FROM ActivityType at").executeUpdate();
+	    	em.createQuery("DELETE FROM Activity a").executeUpdate();
+	    	em.createQuery("DELETE FROM Person p").executeUpdate();
+	    	tx.commit();
+			ActivityPreferenceDao.instance.closeConnections(em);
+    	}
+    	catch(Exception ex) {}
+    	
     	//Insert ActivityType
     	ActivityType at1 = new ActivityType();
     	at1.setActivity_type("Social");
@@ -74,8 +90,7 @@ public class App
     	a1.setPlace("City Centre Trento");
     	a1.setStartdate("2017-10-13T09:50:00.0");
     	
-    	a1.setIdPerson(1);
-    	a1.setIdActivityType(1);
+    	a1.setIdActivityType(at1.getIdActivityType());
     	a1.setActivityType(at1);
     	a1.setPerson(p1);
     	
@@ -96,8 +111,7 @@ public class App
     	a2.setPlace("Iris Club");
     	a2.setStartdate("2017-10-13T21:00:00.0");
     	
-    	a2.setIdPerson(2);
-    	a2.setIdActivityType(1);
+    	a2.setIdActivityType(at1.getIdActivityType());
     	a2.setActivityType(at1);
     	a2.setPerson(p2);
     	
@@ -118,8 +132,7 @@ public class App
     	a3.setPlace("Santa Chiara Sport Gym");
     	a3.setStartdate("2017-10-14T18:00:00.0");
     	
-    	a3.setIdPerson(3);
-    	a3.setIdActivityType(2);
+    	a3.setIdActivityType(at2.getIdActivityType());
     	a3.setActivityType(at2);
     	a3.setPerson(p3);
     	
@@ -138,10 +151,9 @@ public class App
     	a4.setName("Skiing");
     	a4.setDescription("Skiing on the Bondone Mountain");
     	a4.setPlace("Bondone Mountain");
-    	a4.setStartdate("2017-10-15T0800:00.0");
+    	a4.setStartdate("2017-10-15T08:00:00.0");
     	
-    	a4.setIdPerson(4);
-    	a4.setIdActivityType(2);
+    	a4.setIdActivityType(at2.getIdActivityType());
     	a4.setActivityType(at2);
     	a4.setPerson(p4);
     	
@@ -162,8 +174,7 @@ public class App
     	a5.setPlace("Rovereto Centre");
     	a5.setStartdate("2017-10-17T16:00:00.0");
     	
-    	a5.setIdPerson(5);
-    	a5.setIdActivityType(1);
+    	a5.setIdActivityType(at1.getIdActivityType());
     	a5.setActivityType(at1);
     	a5.setPerson(p5);
     	
